@@ -2,6 +2,8 @@ package alias
 
 import (
 	"os"
+
+	"github.com/s111ew/bk/internal/aliasfile"
 )
 
 func AddAlias(args []string) error {
@@ -23,5 +25,6 @@ func AddAlias(args []string) error {
 
 	}
 
-	// create alias string and append it to ~/.bk
+	aliasString := aliasfile.ConstructAliasString(aliasName, path)
+
 }
