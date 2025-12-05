@@ -1,19 +1,26 @@
 package bk
 
-import "github.com/s111ew/bk/internal/aliasfile"
+import (
+	"github.com/s111ew/bk/internal/alias"
+	"github.com/s111ew/bk/internal/aliasfile"
+)
 
 func Run(args []string, path string) error {
 
-	if len(args) == 0 {
+	if len(args) == 0 || len(args) > 3 {
 		// return usage manual
 	}
 
-	aliasfile.MakeAliasFileIfNotExists(path)
+	if err := aliasfile.MakeAliasFileIfNotExists(path); err != nil {
+		return err
+	}
 
 	switch args[0] {
 
 	case "add":
-		// add a new alias/path pair
+		if err := alias.AddAlias(args[1:]); err != nil {
+			return err
+		}
 
 	case "rm":
 		// remove an alias/path pair given an alias

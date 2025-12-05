@@ -1,6 +1,8 @@
 package aliasfile
 
-import "os"
+import (
+	"os"
+)
 
 func MakeAliasFileIfNotExists(path string) error {
 	_, err := os.Stat(path)
