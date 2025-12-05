@@ -1,32 +1,31 @@
 package bk
 
-import (
-	"errors"
-	"fmt"
-)
+import "github.com/s111ew/bk/internal/aliasfile"
 
-func Run(args []string) error {
+func Run(args []string, path string) error {
 
-	if len(args) < 2 {
-		return errors.New("usage")
+	if len(args) == 0 {
+		// return usage manual
 	}
+
+	aliasfile.MakeAliasFileIfNotExists(path)
 
 	switch args[0] {
 
 	case "add":
-		fmt.Println(args[1])
+		// add a new alias/path pair
 
 	case "rm":
-		fmt.Println(args[1])
+		// remove an alias/path pair given an alias
 
-	case "update":
-		fmt.Println(args[1])
+	case "fix":
+		// update an alias/path pair given an an alias and a new path
 
 	case "list":
-		fmt.Println(args[1])
+		// return a table of alias/path pairs
 
 	default:
-		return errors.New("usage")
+		// return usage manual
 
 	}
 
