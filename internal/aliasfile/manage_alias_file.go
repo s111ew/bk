@@ -8,8 +8,8 @@ import (
 )
 
 type Alias struct {
-	alias string
-	path  string
+	Name string
+	Path string
 }
 
 func MakeAliasFileIfNotExists(path string) error {
@@ -83,9 +83,16 @@ func LoadAliases() ([]Alias, error) {
 
 	for _, a := range aliasStrings {
 		al := strings.Split(strings.TrimSpace(a), "=")
-		alias := Alias{al[0], al[1]}
+		alias := Alias{
+			alias: al[0],
+			path:  al[1],
+		}
 		aliases = append(aliases, alias)
 	}
 
 	return aliases, nil
+}
+
+func WriteAliases(aliases []Alias) error {
+
 }

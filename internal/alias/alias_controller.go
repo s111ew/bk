@@ -1,6 +1,7 @@
 package alias
 
 import (
+	"errors"
 	"os"
 
 	"github.com/s111ew/bk/internal/aliasfile"
@@ -25,6 +26,22 @@ func AddAlias(args []string) error {
 
 	}
 
-	aliasString := aliasfile.ConstructAliasString(aliasName, path)
+	aliases, err := aliasfile.LoadAliases()
+	if err != nil {
+		return err
+	}
 
+	for _, a := range aliases {
+		if a.Name == aliasName {
+			return errors.New("alias exists")
+		}
+	}
+
+	newAlias := aliasfile.Alias{
+		Name: aliasName,
+		Path: path,
+	}
+
+	aliases = append(aliases, newAlias)
+	aliasfile.WriteAliases(aliases)
 }
