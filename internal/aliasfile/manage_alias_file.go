@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+type Alias struct {
+	alias string
+	path  string
+}
+
 func MakeAliasFileIfNotExists(path string) error {
 	_, err := os.Stat(path)
 
@@ -22,7 +27,7 @@ func MakeAliasFileIfNotExists(path string) error {
 }
 
 func ConstructAliasString(alias, path string) string {
-	return fmt.Sprintf("alias %s=%s", alias, path)
+	return fmt.Sprintf("%s=%s", alias, path)
 }
 
 func EnsureZshrcConfigured() error {
@@ -64,4 +69,23 @@ func EnsureZshrcConfigured() error {
 
 	_, err = f.WriteString(block)
 	return err
+}
+
+func LoadAliases() ([]Alias, error) {
+	res, err := os.ReadFile("~/.bk")
+	if err != nil {
+		return nil, err
+	}
+
+	aliasStrings := strings.Split(strings.TrimSpace(string(res)), "\n")
+
+	var aliases []Alias
+
+	for _, a := range aliasStrings {
+		al := strings.Split(strings.TrimSpace(a), "=")
+		alias := Alias{al[0], al[1]}
+		aliases = append(aliases, alias)
+	}
+
+	return aliases, nil
 }

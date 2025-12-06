@@ -11,6 +11,10 @@ func Run(args []string, path string) error {
 		// return usage manual
 	}
 
+	if err := aliasfile.EnsureZshrcConfigured(); err != nil {
+		return err
+	}
+
 	if err := aliasfile.MakeAliasFileIfNotExists(path); err != nil {
 		return err
 	}
