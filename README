@@ -1,0 +1,33 @@
+bk — directory alias manager for zsh
+
+Usage:
+  bk <command> [arguments]
+
+Commands:
+  -a  --add     <alias> [path]     Add a new alias/path pair
+  -r  --remove  <alias>            Remove an existing alias
+  -u  --update  <alias> [path]     Update the path associated with an alias
+  -g  --get     <alias>            Print the path for a given alias
+  -l  --list                       List all stored aliases
+  -h  --help                       Print full help text
+
+Descriptions:
+  add     Adds an alias and path pair.
+        - <alias> is required and must be unique.
+        - [path] is optional; if omitted, the current working directory is used.
+
+  remove  Removes an alias (and its stored path).
+        - <alias> must already exist.
+
+  update  Updates the path associated with an existing alias.
+        - <alias> must already exist.
+        - [path] is optional; if omitted, the current working directory is used.
+
+  resolve Prints the path associated with the given alias.
+        - <alias> must already exist.
+
+  list    Prints all aliases and their paths in a table format.
+
+Notes:
+  To enable 'cd <alias>' functionality, bk automatically injects a small
+  integration block into your ~/.zshrc on first run.
