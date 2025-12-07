@@ -23,34 +23,34 @@ func Run(args []string, aliasFilePath, configFilePath string) error {
 
 	switch args[0] {
 
-	case "res":
+	case "-rs", "--resolve":
 		resolvedPath, err := ctrl.ResolveAlias(args[1:], aliasFilePath)
 		if err != nil {
 			return err
 		}
 		fmt.Println(resolvedPath)
 
-	case "add":
+	case "-a", "--add":
 		if err := ctrl.AddAlias(args[1:], aliasFilePath); err != nil {
 			return err
 		}
 
-	case "rm":
+	case "-rm", "--remove":
 		if err := ctrl.RemoveAlias(args[1:], aliasFilePath); err != nil {
 			return err
 		}
 
-	case "fix":
+	case "-u", "--update":
 		if err := ctrl.UpdateAlias(args[1:], aliasFilePath); err != nil {
 			return err
 		}
 
-	case "list":
+	case "-l", "--list":
 		if err := ctrl.ListAliases(aliasFilePath); err != nil {
 			return err
 		}
 
-	case "--help":
+	case "-h", "--help":
 		return fmt.Errorf(HELP_TEXT)
 
 	default:
