@@ -50,6 +50,9 @@ func Run(args []string, aliasFilePath, configFilePath string) error {
 			return err
 		}
 
+	case "--help":
+		return fmt.Errorf(HELP_TEXT)
+
 	default:
 		return fmt.Errorf(USAGE_TEXT)
 
