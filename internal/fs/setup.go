@@ -1,19 +1,31 @@
-package files
+package fs
 
 import (
 	"os"
 	"strings"
 )
 
-func MakeAliasFileIfNotExists(alias_file_path string) error {
-	_, err := os.Stat(alias_file_path)
+func Setup(aliasFilePath, configFilePath string) error {
+	if err := MakeAliasFileIfNotExists(aliasFilePath); err != nil {
+		return err
+	}
+
+	if err := EnsureZshrcConfigured(configFilePath); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func MakeAliasFileIfNotExists(aliasFilePath string) error {
+	_, err := os.Stat(aliasFilePath)
 
 	if err == nil {
 		return nil
 	}
 
 	if os.IsNotExist(err) {
-		f, err := os.Create(alias_file_path)
+		f, err := os.Create(aliasFilePath)
 		if err != nil {
 			return err
 		}

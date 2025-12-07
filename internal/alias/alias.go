@@ -1,11 +1,11 @@
-package ctrl
+package alias
 
 import (
 	"errors"
 	"fmt"
 	"os"
 
-	"github.com/s111ew/bk/internal/files"
+	"github.com/s111ew/bk/internal/fs"
 )
 
 func ResolveAlias(args []string, aliasFilePath string) (string, error) {
@@ -15,7 +15,7 @@ func ResolveAlias(args []string, aliasFilePath string) (string, error) {
 
 	aliasName := args[0]
 
-	aliases, err := files.LoadAliases(aliasFilePath)
+	aliases, err := fs.LoadAliases(aliasFilePath)
 	if err != nil {
 		return "", err
 	}
@@ -59,7 +59,7 @@ func AddAlias(args []string, aliasFilePath string) error {
 
 	}
 
-	aliases, err := files.LoadAliases(aliasFilePath)
+	aliases, err := fs.LoadAliases(aliasFilePath)
 	if err != nil {
 		return err
 	}
@@ -70,14 +70,14 @@ func AddAlias(args []string, aliasFilePath string) error {
 		}
 	}
 
-	newAlias := files.Alias{
+	newAlias := fs.Alias{
 		Name: aliasName,
 		Path: path,
 	}
 
 	aliases = append(aliases, newAlias)
 
-	if err := files.WriteAliases(aliases, aliasFilePath); err != nil {
+	if err := fs.WriteAliases(aliases, aliasFilePath); err != nil {
 		return err
 	}
 
@@ -113,7 +113,7 @@ func UpdateAlias(args []string, aliasFilePath string) error {
 
 	}
 
-	aliases, err := files.LoadAliases(aliasFilePath)
+	aliases, err := fs.LoadAliases(aliasFilePath)
 	if err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func UpdateAlias(args []string, aliasFilePath string) error {
 		aliases = append(aliases, a)
 	}
 
-	if err := files.WriteAliases(aliases, aliasFilePath); err != nil {
+	if err := fs.WriteAliases(aliases, aliasFilePath); err != nil {
 		return err
 	}
 
@@ -139,12 +139,12 @@ func RemoveAlias(args []string, aliasFilePath string) error {
 
 	aliasName := args[0]
 
-	aliases, err := files.LoadAliases(aliasFilePath)
+	aliases, err := fs.LoadAliases(aliasFilePath)
 	if err != nil {
 		return err
 	}
 
-	var newAliases []files.Alias
+	var newAliases []fs.Alias
 
 	for _, a := range aliases {
 		if a.Name != aliasName {
@@ -152,7 +152,7 @@ func RemoveAlias(args []string, aliasFilePath string) error {
 		}
 	}
 
-	if err := files.WriteAliases(newAliases, aliasFilePath); err != nil {
+	if err := fs.WriteAliases(newAliases, aliasFilePath); err != nil {
 		return err
 	}
 
@@ -160,7 +160,7 @@ func RemoveAlias(args []string, aliasFilePath string) error {
 }
 
 func ListAliases(aliasFilePath string) error {
-	aliases, err := files.LoadAliases(aliasFilePath)
+	aliases, err := fs.LoadAliases(aliasFilePath)
 	if err != nil {
 		return err
 	}
