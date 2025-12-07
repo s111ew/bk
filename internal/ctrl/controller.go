@@ -7,7 +7,7 @@ import (
 	"github.com/s111ew/bk/internal/files"
 )
 
-func AddAlias(args []string) error {
+func AddAlias(args []string, alias_file_path string) error {
 	aliasName := args[0]
 
 	var path string
@@ -26,7 +26,7 @@ func AddAlias(args []string) error {
 
 	}
 
-	aliases, err := files.LoadAliases()
+	aliases, err := files.LoadAliases(alias_file_path)
 	if err != nil {
 		return err
 	}
@@ -43,5 +43,9 @@ func AddAlias(args []string) error {
 	}
 
 	aliases = append(aliases, newAlias)
-	files.WriteAliases(aliases)
+	if err := files.WriteAliases(aliases, alias_file_path); err != nil {
+		return err
+	}
+
+	return nil
 }

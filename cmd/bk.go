@@ -1,28 +1,30 @@
 package bk
 
 import (
+	"errors"
+
 	"github.com/s111ew/bk/internal/ctrl"
 	"github.com/s111ew/bk/internal/files"
 )
 
-func Run(args []string, path string) error {
+func Run(args []string, alias_file_path, config_file_path string) error {
 
 	if len(args) == 0 || len(args) > 3 {
-		// return usage manual
+		return errors.New("usage")
 	}
 
-	if err := files.EnsureZshrcConfigured(); err != nil {
+	if err := files.MakeAliasFileIfNotExists(alias_file_path); err != nil {
 		return err
 	}
 
-	if err := files.MakeAliasFileIfNotExists(path); err != nil {
+	if err := files.EnsureZshrcConfigured(config_file_path); err != nil {
 		return err
 	}
 
 	switch args[0] {
 
 	case "add":
-		if err := ctrl.AddAlias(args[1:]); err != nil {
+		if err := ctrl.AddAlias(args[1:], alias_file_path); err != nil {
 			return err
 		}
 
