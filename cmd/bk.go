@@ -1,7 +1,6 @@
 package bk
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/s111ew/bk/internal/ctrl"
@@ -11,7 +10,7 @@ import (
 func Run(args []string, aliasFilePath, configFilePath string) error {
 
 	if len(args) == 0 || len(args) > 3 {
-		return errors.New("usage")
+		return fmt.Errorf(USAGE_TEXT)
 	}
 
 	if err := files.MakeAliasFileIfNotExists(aliasFilePath); err != nil {
@@ -52,7 +51,7 @@ func Run(args []string, aliasFilePath, configFilePath string) error {
 		}
 
 	default:
-		// return usage manual
+		return fmt.Errorf(USAGE_TEXT)
 
 	}
 
