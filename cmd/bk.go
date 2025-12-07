@@ -1,8 +1,8 @@
 package bk
 
 import (
-	"github.com/s111ew/bk/internal/alias"
-	"github.com/s111ew/bk/internal/aliasfile"
+	"github.com/s111ew/bk/internal/ctrl"
+	"github.com/s111ew/bk/internal/files"
 )
 
 func Run(args []string, path string) error {
@@ -11,18 +11,18 @@ func Run(args []string, path string) error {
 		// return usage manual
 	}
 
-	if err := aliasfile.EnsureZshrcConfigured(); err != nil {
+	if err := files.EnsureZshrcConfigured(); err != nil {
 		return err
 	}
 
-	if err := aliasfile.MakeAliasFileIfNotExists(path); err != nil {
+	if err := files.MakeAliasFileIfNotExists(path); err != nil {
 		return err
 	}
 
 	switch args[0] {
 
 	case "add":
-		if err := alias.AddAlias(args[1:]); err != nil {
+		if err := ctrl.AddAlias(args[1:]); err != nil {
 			return err
 		}
 

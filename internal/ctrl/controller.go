@@ -1,10 +1,10 @@
-package alias
+package ctrl
 
 import (
 	"errors"
 	"os"
 
-	"github.com/s111ew/bk/internal/aliasfile"
+	"github.com/s111ew/bk/internal/files"
 )
 
 func AddAlias(args []string) error {
@@ -26,7 +26,7 @@ func AddAlias(args []string) error {
 
 	}
 
-	aliases, err := aliasfile.LoadAliases()
+	aliases, err := files.LoadAliases()
 	if err != nil {
 		return err
 	}
@@ -37,11 +37,11 @@ func AddAlias(args []string) error {
 		}
 	}
 
-	newAlias := aliasfile.Alias{
+	newAlias := files.Alias{
 		Name: aliasName,
 		Path: path,
 	}
 
 	aliases = append(aliases, newAlias)
-	aliasfile.WriteAliases(aliases)
+	files.WriteAliases(aliases)
 }

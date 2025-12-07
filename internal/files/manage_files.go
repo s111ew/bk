@@ -1,4 +1,4 @@
-package aliasfile
+package files
 
 import (
 	"fmt"
@@ -12,8 +12,12 @@ type Alias struct {
 	Path string
 }
 
-func MakeAliasFileIfNotExists(path string) error {
-	_, err := os.Stat(path)
+func (a Alias) String() string {
+	return fmt.Sprintf("%s=%s\n", a.Name, a.Path)
+}
+
+func MakeAliasFileIfNotExists(alias_file_path string) error {
+	_, err := os.Stat(alias_file_path)
 
 	if err == nil {
 		return nil
@@ -24,10 +28,6 @@ func MakeAliasFileIfNotExists(path string) error {
 	}
 
 	return err
-}
-
-func ConstructAliasString(alias, path string) string {
-	return fmt.Sprintf("%s=%s", alias, path)
 }
 
 func EnsureZshrcConfigured() error {
@@ -71,28 +71,53 @@ func EnsureZshrcConfigured() error {
 	return err
 }
 
-func LoadAliases() ([]Alias, error) {
-	res, err := os.ReadFile("~/.bk")
+func LoadAliases(alias_file_path string) ([]Alias, error) {
+	res, err := os.ReadFile(alias_file_path)
 	if err != nil {
 		return nil, err
 	}
 
-	aliasStrings := strings.Split(strings.TrimSpace(string(res)), "\n")
+	aliases := bytesToAliases(res)
+
+	return aliases, nil
+}
+
+func WriteAliases(alias_file_path string, aliases []Alias) error {
+	f, err := os.OpenFile(alias_file_path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = f.Write(aliasesToBytes(aliases))
+	if err != nil {
+		return err
+	}
+}
+
+func aliasesToBytes(aliases []Alias) []byte {
+	var byteStream []byte
+
+	for _, a := range aliases {
+		byteStream = append(byteStream, []byte(a.String())...)
+	}
+
+	return byteStream
+}
+
+func bytesToAliases(bytes []byte) []Alias {
+	aliasStrings := strings.Split(strings.TrimSpace(string(bytes)), "\n")
 
 	var aliases []Alias
 
 	for _, a := range aliasStrings {
 		al := strings.Split(strings.TrimSpace(a), "=")
 		alias := Alias{
-			alias: al[0],
-			path:  al[1],
+			Name: al[0],
+			Path: al[1],
 		}
 		aliases = append(aliases, alias)
 	}
 
-	return aliases, nil
-}
-
-func WriteAliases(aliases []Alias) error {
-
+	return aliases
 }
