@@ -13,7 +13,7 @@ const CONFIG_FILE = ".zshrc"
 func Run(args []string) error {
 
 	if len(args) == 0 {
-		return fmt.Errorf("bk: bk commands require arguments. See 'bk --help'.")
+		return fmt.Errorf("bk: bk requires a command. See 'bk --help'.")
 	}
 
 	if len(args) > 3 {
