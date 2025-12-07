@@ -1,1 +1,1 @@
-Zsh directory alias manager
+zsh directory alias manager
