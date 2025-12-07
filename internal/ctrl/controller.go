@@ -9,6 +9,10 @@ import (
 )
 
 func ResolveAlias(args []string, aliasFilePath string) (string, error) {
+	if len(args) != 1 {
+		return "", fmt.Errorf("bk: 'bk --get' requires 1 argument '<alias>'. See 'bk --help'.")
+	}
+
 	aliasName := args[0]
 
 	aliases, err := files.LoadAliases(aliasFilePath)
@@ -26,6 +30,15 @@ func ResolveAlias(args []string, aliasFilePath string) (string, error) {
 }
 
 func AddAlias(args []string, aliasFilePath string) error {
+
+	if len(args) < 1 {
+		return fmt.Errorf("bk: 'bk --add' requires atleast 1 argument '<alias>' and optionally '<path>'. See 'bk --help'.")
+	}
+
+	if len(args) > 2 {
+		return fmt.Errorf("bk: 'bk --add' accepts 1 argument '<alias>' and optionally '<path>'. See 'bk --help'.")
+	}
+
 	aliasName := args[0]
 
 	var path string
@@ -72,6 +85,14 @@ func AddAlias(args []string, aliasFilePath string) error {
 }
 
 func UpdateAlias(args []string, aliasFilePath string) error {
+	if len(args) < 1 {
+		return fmt.Errorf("bk: 'bk --update' requires atleast 1 argument '<alias>' and optionally '<path>'. See 'bk --help'.")
+	}
+
+	if len(args) > 2 {
+		return fmt.Errorf("bk: 'bk --update' accepts 1 argument '<alias>' and optionally '<path>'. See 'bk --help'.")
+	}
+
 	aliasName := args[0]
 
 	var path string
@@ -112,6 +133,10 @@ func UpdateAlias(args []string, aliasFilePath string) error {
 }
 
 func RemoveAlias(args []string, aliasFilePath string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("bk: 'bk --remove' requires 1 argument '<alias>'. See 'bk --help'.")
+	}
+
 	aliasName := args[0]
 
 	aliases, err := files.LoadAliases(aliasFilePath)
