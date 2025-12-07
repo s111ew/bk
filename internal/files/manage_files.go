@@ -1,6 +1,7 @@
 package files
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -93,30 +94,40 @@ func WriteAliases(alias_file_path string, aliases []Alias) error {
 	if err != nil {
 		return err
 	}
+
+	return nil
 }
 
 func aliasesToBytes(aliases []Alias) []byte {
-	var byteStream []byte
+	var buf bytes.Buffer
 
 	for _, a := range aliases {
-		byteStream = append(byteStream, []byte(a.String())...)
+		fmt.Fprint(&buf, a.String())
 	}
 
-	return byteStream
+	return buf.Bytes()
 }
 
-func bytesToAliases(bytes []byte) []Alias {
-	aliasStrings := strings.Split(strings.TrimSpace(string(bytes)), "\n")
+func bytesToAliases(b []byte) []Alias {
+	lines := strings.Split(strings.TrimSpace(string(b)), "\n")
 
 	var aliases []Alias
 
-	for _, a := range aliasStrings {
-		al := strings.Split(strings.TrimSpace(a), "=")
-		alias := Alias{
-			Name: al[0],
-			Path: al[1],
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
 		}
-		aliases = append(aliases, alias)
+
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+
+		aliases = append(aliases, Alias{
+			Name: parts[0],
+			Path: parts[1],
+		})
 	}
 
 	return aliases
