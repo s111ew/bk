@@ -47,7 +47,9 @@ func Run(args []string, aliasFilePath, configFilePath string) error {
 		}
 
 	case "list":
-		// return a table of alias/path pairs
+		if err := ctrl.ListAliases(aliasFilePath); err != nil {
+			return err
+		}
 
 	default:
 		// return usage manual

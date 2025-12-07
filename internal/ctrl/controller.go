@@ -2,6 +2,7 @@ package ctrl
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/s111ew/bk/internal/files"
@@ -128,6 +129,22 @@ func RemoveAlias(args []string, aliasFilePath string) error {
 
 	if err := files.WriteAliases(newAliases, aliasFilePath); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func ListAliases(aliasFilePath string) error {
+	aliases, err := files.LoadAliases(aliasFilePath)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%-10s %-40s\n", "Alias", "Path")
+	fmt.Println("-----------------------------------------------")
+
+	for _, a := range aliases {
+		fmt.Printf("%-10s %-40s\n", a.Name, a.Path)
 	}
 
 	return nil
