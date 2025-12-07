@@ -2,37 +2,49 @@ package bk
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/s111ew/bk/internal/ctrl"
 	"github.com/s111ew/bk/internal/files"
 )
 
-func Run(args []string, alias_file_path, config_file_path string) error {
+func Run(args []string, aliasFilePath, configFilePath string) error {
 
 	if len(args) == 0 || len(args) > 3 {
 		return errors.New("usage")
 	}
 
-	if err := files.MakeAliasFileIfNotExists(alias_file_path); err != nil {
+	if err := files.MakeAliasFileIfNotExists(aliasFilePath); err != nil {
 		return err
 	}
 
-	if err := files.EnsureZshrcConfigured(config_file_path); err != nil {
+	if err := files.EnsureZshrcConfigured(configFilePath); err != nil {
 		return err
 	}
 
 	switch args[0] {
 
+	case "res":
+		resolvedPath, err := ctrl.ResolveAlias(args[1:], aliasFilePath)
+		if err != nil {
+			return err
+		}
+		fmt.Println(resolvedPath)
+
 	case "add":
-		if err := ctrl.AddAlias(args[1:], alias_file_path); err != nil {
+		if err := ctrl.AddAlias(args[1:], aliasFilePath); err != nil {
 			return err
 		}
 
 	case "rm":
-		// remove an alias/path pair given an alias
+		if err := ctrl.RemoveAlias(args[1:], aliasFilePath); err != nil {
+			return err
+		}
 
 	case "fix":
-		// update an alias/path pair given an an alias and a new path
+		if err := ctrl.UpdateAlias(args[1:], aliasFilePath); err != nil {
+			return err
+		}
 
 	case "list":
 		// return a table of alias/path pairs

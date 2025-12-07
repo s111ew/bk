@@ -16,8 +16,8 @@ func (a Alias) String() string {
 	return fmt.Sprintf("%s=%s\n", a.Name, a.Path)
 }
 
-func LoadAliases(alias_file_path string) ([]Alias, error) {
-	res, err := os.ReadFile(alias_file_path)
+func LoadAliases(aliasFilePath string) ([]Alias, error) {
+	res, err := os.ReadFile(aliasFilePath)
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +27,8 @@ func LoadAliases(alias_file_path string) ([]Alias, error) {
 	return aliases, nil
 }
 
-func WriteAliases(aliases []Alias, alias_file_path string) error {
-	f, err := os.OpenFile(alias_file_path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+func WriteAliases(aliases []Alias, aliasFilePath string) error {
+	f, err := os.OpenFile(aliasFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}

@@ -7,7 +7,24 @@ import (
 	"github.com/s111ew/bk/internal/files"
 )
 
-func AddAlias(args []string, alias_file_path string) error {
+func ResolveAlias(args []string, aliasFilePath string) (string, error) {
+	aliasName := args[0]
+
+	aliases, err := files.LoadAliases(aliasFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	for _, a := range aliases {
+		if a.Name == aliasName {
+			return a.Path, nil
+		}
+	}
+
+	return "", errors.New("alias not found")
+}
+
+func AddAlias(args []string, aliasFilePath string) error {
 	aliasName := args[0]
 
 	var path string
@@ -15,9 +32,11 @@ func AddAlias(args []string, alias_file_path string) error {
 	if len(args) == 1 {
 
 		currWd, err := os.Getwd()
+
 		if err != nil {
 			return err
 		}
+
 		path = currWd
 
 	} else {
@@ -26,7 +45,7 @@ func AddAlias(args []string, alias_file_path string) error {
 
 	}
 
-	aliases, err := files.LoadAliases(alias_file_path)
+	aliases, err := files.LoadAliases(aliasFilePath)
 	if err != nil {
 		return err
 	}
@@ -43,7 +62,71 @@ func AddAlias(args []string, alias_file_path string) error {
 	}
 
 	aliases = append(aliases, newAlias)
-	if err := files.WriteAliases(aliases, alias_file_path); err != nil {
+
+	if err := files.WriteAliases(aliases, aliasFilePath); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateAlias(args []string, aliasFilePath string) error {
+	aliasName := args[0]
+
+	var path string
+
+	if len(args) == 1 {
+
+		currWd, err := os.Getwd()
+
+		if err != nil {
+			return err
+		}
+
+		path = currWd
+
+	} else {
+
+		path = args[1]
+
+	}
+
+	aliases, err := files.LoadAliases(aliasFilePath)
+	if err != nil {
+		return err
+	}
+
+	for _, a := range aliases {
+		if a.Name == aliasName {
+			a.Path = path
+		}
+		aliases = append(aliases, a)
+	}
+
+	if err := files.WriteAliases(aliases, aliasFilePath); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RemoveAlias(args []string, aliasFilePath string) error {
+	aliasName := args[0]
+
+	aliases, err := files.LoadAliases(aliasFilePath)
+	if err != nil {
+		return err
+	}
+
+	var newAliases []files.Alias
+
+	for _, a := range aliases {
+		if a.Name != aliasName {
+			newAliases = append(newAliases, a)
+		}
+	}
+
+	if err := files.WriteAliases(newAliases, aliasFilePath); err != nil {
 		return err
 	}
 
