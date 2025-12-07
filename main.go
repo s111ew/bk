@@ -3,26 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
-	bk "github.com/s111ew/bk/cmd"
+	"github.com/s111ew/bk/cmd"
 )
 
-const ALIAS_FILE = ".bk"
-const CONFIG_FILE = ".zshrc"
-
 func main() {
-	home, err := os.UserHomeDir()
-	if err != nil {
+	if err := cmd.Run(os.Args[1:]); err != nil {
 		fmt.Println(err)
-		return
-	}
-
-	aliasFilePath := filepath.Join(home, ALIAS_FILE)
-	configFilePath := filepath.Join(home, CONFIG_FILE)
-
-	if err := bk.Run(os.Args[1:], aliasFilePath, configFilePath); err != nil {
-		fmt.Println(err)
-		return
+		os.Exit(1)
 	}
 }

@@ -1,4 +1,4 @@
-package bk
+package cmd
 
 import (
 	"fmt"
@@ -7,7 +7,10 @@ import (
 	"github.com/s111ew/bk/internal/files"
 )
 
-func Run(args []string, aliasFilePath, configFilePath string) error {
+const ALIAS_FILE = ".bk"
+const CONFIG_FILE = ".zshrc"
+
+func Run(args []string) error {
 
 	if len(args) == 0 {
 		return fmt.Errorf("bk: bk commands require arguments. See 'bk --help'.")
@@ -15,6 +18,11 @@ func Run(args []string, aliasFilePath, configFilePath string) error {
 
 	if len(args) > 3 {
 		return fmt.Errorf("bk: too many arguments. See 'bk --help'.")
+	}
+
+	aliasFilePath, configFilePath, err := files.GeneratePaths(ALIAS_FILE, CONFIG_FILE)
+	if err != nil {
+		return err
 	}
 
 	if err := files.MakeAliasFileIfNotExists(aliasFilePath); err != nil {

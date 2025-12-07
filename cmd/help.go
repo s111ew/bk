@@ -1,4 +1,4 @@
-package bk
+package cmd
 
 const HELP_TEXT = `bk — directory alias manager for zsh
 
