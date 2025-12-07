@@ -1,31 +1,17 @@
 package bk
 
-const USAGE_TEXT = `bk — directory alias manager for zsh
-
-Usage:
-  bk <command> [arguments]
-
-Commands:
-  -a  --add			<alias> [path]     Add a new alias/path pair
-  -r  --remove    	<alias>            Remove an existing alias
-  -u  --update   	<alias> [path]     Update the path associated with an alias
-  -g  --get   		<alias>            Print the path for a given alias
-  -l  --list                     	   List all stored aliases
-  -h  --help				   		   Print full help text
-`
-
 const HELP_TEXT = `bk — directory alias manager for zsh
 
 Usage:
   bk <command> [arguments]
 
 Commands:
-  -a  --add			<alias> [path]     Add a new alias/path pair
-  -r  --remove    	<alias>            Remove an existing alias
-  -u  --update   	<alias> [path]     Update the path associated with an alias
-  -g  --get   		<alias>            Print the path for a given alias
-  -l  --list                     	   List all stored aliases
-  -h  --help				   		   Print full help text
+  -a  --add     <alias> [path]     Add a new alias/path pair
+  -r  --remove  <alias>            Remove an existing alias
+  -u  --update  <alias> [path]     Update the path associated with an alias
+  -g  --get     <alias>            Print the path for a given alias
+  -l  --list                       List all stored aliases
+  -h  --help                       Print full help text
 
 Descriptions:
   add     Adds an alias and path pair.

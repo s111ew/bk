@@ -9,8 +9,12 @@ import (
 
 func Run(args []string, aliasFilePath, configFilePath string) error {
 
-	if len(args) == 0 || len(args) > 3 {
-		return fmt.Errorf(USAGE_TEXT)
+	if len(args) == 0 {
+		return fmt.Errorf("bk: bk commands require arguments. See 'bk --help'.")
+	}
+
+	if len(args) > 3 {
+		return fmt.Errorf("bk: too many arguments. See 'bk --help'.")
 	}
 
 	if err := files.MakeAliasFileIfNotExists(aliasFilePath); err != nil {
@@ -54,7 +58,7 @@ func Run(args []string, aliasFilePath, configFilePath string) error {
 		return fmt.Errorf(HELP_TEXT)
 
 	default:
-		return fmt.Errorf(USAGE_TEXT)
+		return fmt.Errorf("bk: '%s' is not a bk command. See 'bk --help'.", args[0])
 
 	}
 
