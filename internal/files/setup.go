@@ -36,7 +36,7 @@ func EnsureZshrcConfigured(configFilePath string) error {
 source ~/.bk_aliases
 bk_cd() {
 	local resolved
-	resolved=$(bk --resolve "$1" 2>/dev/null)
+	resolved=$(bk --get "$1" 2>/dev/null)
 	if [ -n "$resolved" ]; then
 		builtin cd "$resolved"
 	else

@@ -23,7 +23,7 @@ func Run(args []string, aliasFilePath, configFilePath string) error {
 
 	switch args[0] {
 
-	case "-rs", "--resolve":
+	case "-g", "--get":
 		resolvedPath, err := ctrl.ResolveAlias(args[1:], aliasFilePath)
 		if err != nil {
 			return err
@@ -35,7 +35,7 @@ func Run(args []string, aliasFilePath, configFilePath string) error {
 			return err
 		}
 
-	case "-rm", "--remove":
+	case "-r", "--remove":
 		if err := ctrl.RemoveAlias(args[1:], aliasFilePath); err != nil {
 			return err
 		}
