@@ -29,6 +29,20 @@ func ResolveAlias(args []string, aliasFilePath string) (string, error) {
 	return "", errors.New("alias not found")
 }
 
+func UnsafeResolveAlias(args []string, aliasFilePath string) string {
+	aliasName := args[0]
+
+	aliases, _ := fs.LoadAliases(aliasFilePath)
+
+	for _, a := range aliases {
+		if a.Name == aliasName {
+			return a.Path
+		}
+	}
+
+	return ""
+}
+
 func AddAlias(args []string, aliasFilePath string) error {
 
 	if len(args) < 1 {

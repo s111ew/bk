@@ -61,6 +61,9 @@ func Run(args []string) error {
 	case "-h", "--help":
 		return fmt.Errorf(HELP_TEXT)
 
+	case "--resolve":
+		fmt.Println(alias.UnsafeResolveAlias(args[1:], aliasFilePath))
+
 	default:
 		return fmt.Errorf("bk: '%s' is not a bk command. See 'bk --help'.", args[0])
 

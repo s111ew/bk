@@ -45,10 +45,10 @@ func EnsureZshrcConfigured(configFilePath string) error {
 
 	block := `
 # >>> bk init >>>
-source ~/.bk_aliases
+source ~/.bk
 bk_cd() {
 	local resolved
-	resolved=$(bk --get "$1" 2>/dev/null)
+	resolved=$(bk --resolve "$1" 2>/dev/null)
 	if [ -n "$resolved" ]; then
 		builtin cd "$resolved"
 	else
