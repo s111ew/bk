@@ -28,28 +28,22 @@ bk_cd() {
 alias cd=bk_cd
 
 _bk_cd_complete() {
-    local -a dirs bk all
-    local cur
+    local -a bk_keys
+    local expl
 
-    cur="${words[CURRENT]}"
-
-    dirs=(${(f)"$(print -rC1 -- *(N-/))"})
-    if [[ -n $cur ]]; then
-        dirs=(${(M)dirs:#$cur*})
-    fi
-
+    # Load alias keys from ~/.bk
     if [[ -f "$HOME/.bk" ]]; then
-        bk=("${(f)$(awk -F '=' 'NF>=2 && $1 !~ /^[[:space:]]*#/ {print $1}' "$HOME/.bk")}")
-        if [[ -n $cur ]]; then
-            bk=(${(M)bk:#$cur*})
-        fi
+        bk_keys=("${(f)$(awk -F '=' 'NF>=2 && $1 !~ /^[[:space:]]*#/ {print $1}' "$HOME/.bk")}")
     fi
 
-    all=("${dirs[@]}" "${bk[@]}")
-
-    compadd -Q -- $all
+    # Use zsh native _arguments
+    # - First argument: complete either a directory or a bk alias
+    _arguments \
+        '1:directory:_files -/' \
+        && compadd -a bk_keys
 }
 
+# Register completion for both cd and bk_cd
 compdef _bk_cd_complete cd bk_cd
 
 `
