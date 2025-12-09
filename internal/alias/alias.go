@@ -32,15 +32,9 @@ func ResolveAlias(args []string, aliasFilePath string) (string, error) {
 func UnsafeResolveAlias(args []string, aliasFilePath string) string {
 	aliasName := args[0]
 
-	aliases, _ := fs.LoadAliases(aliasFilePath)
+	alias, _ := fs.LoadSingleAlias(aliasName, aliasFilePath)
 
-	for _, a := range aliases {
-		if a.Name == aliasName {
-			return a.Path
-		}
-	}
-
-	return ""
+	return alias.Path
 }
 
 func AddAlias(args []string, aliasFilePath string) error {
@@ -80,7 +74,7 @@ func AddAlias(args []string, aliasFilePath string) error {
 
 	for _, a := range aliases {
 		if a.Name == aliasName {
-			return errors.New("alias exists")
+			return errors.New(fmt.Sprintf("bk: alias '%s' exists", aliasName))
 		}
 	}
 
