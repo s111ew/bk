@@ -19,15 +19,15 @@ alias cd=bk_cd
 _bk_cd_complete() {
     local -a dirs bk all
 
-    # Standard directory completion
-    dirs=(${(f)"$(compgen -d -- "$PREFIX")"})
+    dirs=(${(f)"$(printf '%s\n' -- *(N-/) )"})
+    dirs=(${dirs[@]:#$PREFIX*})
 
-    # bk aliases (first column)
     if [[ -f "$HOME/.bk" ]]; then
-        bk=("${(f)$(awk '{print $1}' "$HOME/.bk")}")
+        bk=("${(f)$(awk -F '=' '
+            NF >= 2 && $1 !~ /^[[:space:]]*#/ {print $1}
+        ' "$HOME/.bk")}")
     fi
 
-    # Merge
     all=("${dirs[@]}" "${bk[@]}")
 
     compadd -- $all
