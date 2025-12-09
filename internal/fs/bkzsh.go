@@ -32,8 +32,6 @@ _bk_cd_complete() {
 
     compadd -- $all
 }
-
-_bk_cd_complete "$@"
 `
 
 	zshInsert = `
