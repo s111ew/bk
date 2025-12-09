@@ -5,8 +5,12 @@ import (
 	"strings"
 )
 
-func Setup(aliasFilePath, configFilePath string) error {
+func Setup(aliasFilePath, configFilePath, zshFuncsFilePath string) error {
 	if err := MakeAliasFileIfNotExists(aliasFilePath); err != nil {
+		return err
+	}
+
+	if err := makeBkZshFileIfNotExists(zshFuncsFilePath); err != nil {
 		return err
 	}
 
@@ -35,6 +39,27 @@ func MakeAliasFileIfNotExists(aliasFilePath string) error {
 	return err
 }
 
+func makeBkZshFileIfNotExists(zshFuncsFilePath string) error {
+	_, err := os.Stat(zshFuncsFilePath)
+
+	if err == nil {
+		return nil
+	}
+
+	if os.IsNotExist(err) {
+		f, err := os.OpenFile(zshFuncsFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+
+		_, err = f.WriteString(bkZshContents)
+		return err
+	}
+
+	return err
+}
+
 func EnsureZshrcConfigured(configFilePath string) error {
 	data, _ := os.ReadFile(configFilePath)
 	contents := string(data)
@@ -43,28 +68,12 @@ func EnsureZshrcConfigured(configFilePath string) error {
 		return nil
 	}
 
-	block := `
-# >>> bk init >>>
-source ~/.bk
-bk_cd() {
-	local resolved
-	resolved=$(bk --resolve "$1" 2>/dev/null)
-	if [ -n "$resolved" ]; then
-		builtin cd "$resolved"
-	else
-		builtin cd "$1"
-	fi
-}
-alias cd=bk_cd
-# <<< bk init <<<
-		`
-
 	f, err := os.OpenFile(configFilePath, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	_, err = f.WriteString(block)
+	_, err = f.WriteString(zshInsert)
 	return err
 }

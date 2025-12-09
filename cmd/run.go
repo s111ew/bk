@@ -9,6 +9,7 @@ import (
 
 const ALIAS_FILE = ".bk"
 const CONFIG_FILE = ".zshrc"
+const ZSH_FUNCS_FILE = ".bk.zsh"
 
 func Run(args []string) error {
 
@@ -20,12 +21,12 @@ func Run(args []string) error {
 		return fmt.Errorf("bk: too many arguments. See 'bk --help'.")
 	}
 
-	aliasFilePath, configFilePath, err := fs.GeneratePaths(ALIAS_FILE, CONFIG_FILE)
+	aliasFilePath, configFilePath, zshFuncsFilePath, err := fs.GeneratePaths(ALIAS_FILE, CONFIG_FILE, ZSH_FUNCS_FILE)
 	if err != nil {
 		return err
 	}
 
-	if err := fs.Setup(aliasFilePath, configFilePath); err != nil {
+	if err := fs.Setup(aliasFilePath, configFilePath, zshFuncsFilePath); err != nil {
 		return err
 	}
 
