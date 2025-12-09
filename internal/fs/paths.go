@@ -5,14 +5,15 @@ import (
 	"path/filepath"
 )
 
-func GeneratePaths(aliasFileName, configFileName string) (string, string, error) {
+func GeneratePaths(aliasFileName, configFileName, zshFuncsFileName string) (string, string, string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
 	aliasFilePath := filepath.Join(home, aliasFileName)
 	configFilePath := filepath.Join(home, configFileName)
+	zshFuncsFilePath := filepath.Join(home, zshFuncsFileName)
 
-	return aliasFilePath, configFilePath, nil
+	return aliasFilePath, configFilePath, zshFuncsFilePath, nil
 }
