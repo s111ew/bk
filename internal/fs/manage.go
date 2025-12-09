@@ -1,6 +1,7 @@
 package fs
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"os"
@@ -14,6 +15,37 @@ type Alias struct {
 
 func (a Alias) String() string {
 	return fmt.Sprintf("%s=%s\n", a.Name, a.Path)
+}
+
+func LoadSingleAlias(aliasToFind, aliasFilePath string) (Alias, error) {
+	file, err := os.Open(aliasFilePath)
+	if err != nil {
+		return Alias{Name: "", Path: ""}, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		line := strings.Split(scanner.Text(), "=")
+		alias := line[0]
+		path := line[1]
+
+		if alias == aliasToFind {
+			found := Alias{
+				Name: alias,
+				Path: path,
+			}
+
+			return found, nil
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return Alias{Name: "", Path: ""}, err
+	}
+
+	return Alias{Name: "", Path: ""}, nil
 }
 
 func LoadAliases(aliasFilePath string) ([]Alias, error) {
