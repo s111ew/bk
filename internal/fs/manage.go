@@ -3,6 +3,7 @@ package fs
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -46,6 +47,54 @@ func LoadSingleAlias(aliasToFind, aliasFilePath string) (Alias, error) {
 	}
 
 	return Alias{Name: "", Path: ""}, nil
+}
+
+func WriteSingleAlias(aliasNameToAdd, aliasPathToAdd, aliasFilePath string) error {
+	aliases, err := LoadAliases(aliasFilePath)
+	if err != nil {
+		return err
+	}
+
+	newAlias := Alias{Name: aliasNameToAdd, Path: aliasPathToAdd}
+
+	for _, a := range aliases {
+		if a.Name == newAlias.Name {
+			return errors.New(fmt.Sprintf("bk: alias '%s' exists", aliasNameToAdd))
+		}
+
+		if a.Path == newAlias.Path {
+			return errors.New(fmt.Sprintf("bk: alias for path '%s' exists", aliasPathToAdd))
+		}
+	}
+
+	aliases = append(aliases, newAlias)
+
+	if err := WriteAliases(aliases, aliasFilePath); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RemoveSingleAlias(aliasName, aliasFilePath string) error {
+	aliases, err := LoadAliases(aliasFilePath)
+	if err != nil {
+		return err
+	}
+
+	var newAliases []Alias
+
+	for _, a := range aliases {
+		if a.Name != aliasName {
+			newAliases = append(newAliases, a)
+		}
+	}
+
+	if err := WriteAliases(newAliases, aliasFilePath); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func LoadAliases(aliasFilePath string) ([]Alias, error) {
