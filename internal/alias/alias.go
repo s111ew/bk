@@ -49,7 +49,7 @@ func AddAlias(args []string, aliasFilePath string) error {
 
 	aliasName := args[0]
 
-	var path string
+	var aliasPath string
 
 	if len(args) == 1 {
 
@@ -59,33 +59,15 @@ func AddAlias(args []string, aliasFilePath string) error {
 			return err
 		}
 
-		path = currWd
+		aliasPath = currWd
 
 	} else {
 
-		path = args[1]
+		aliasPath = args[1]
 
 	}
 
-	aliases, err := fs.LoadAliases(aliasFilePath)
-	if err != nil {
-		return err
-	}
-
-	for _, a := range aliases {
-		if a.Name == aliasName {
-			return errors.New(fmt.Sprintf("bk: alias '%s' exists", aliasName))
-		}
-	}
-
-	newAlias := fs.Alias{
-		Name: aliasName,
-		Path: path,
-	}
-
-	aliases = append(aliases, newAlias)
-
-	if err := fs.WriteAliases(aliases, aliasFilePath); err != nil {
+	if err := fs.WriteSingleAlias(aliasName, aliasPath, aliasFilePath); err != nil {
 		return err
 	}
 
@@ -147,20 +129,8 @@ func RemoveAlias(args []string, aliasFilePath string) error {
 
 	aliasName := args[0]
 
-	aliases, err := fs.LoadAliases(aliasFilePath)
+	err := fs.RemoveSingleAlias(aliasName, aliasFilePath)
 	if err != nil {
-		return err
-	}
-
-	var newAliases []fs.Alias
-
-	for _, a := range aliases {
-		if a.Name != aliasName {
-			newAliases = append(newAliases, a)
-		}
-	}
-
-	if err := fs.WriteAliases(newAliases, aliasFilePath); err != nil {
 		return err
 	}
 
