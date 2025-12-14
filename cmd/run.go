@@ -14,7 +14,7 @@ const ZSH_FUNCS_FILE = ".bk.zsh"
 func Run(args []string) error {
 
 	if len(args) == 0 {
-		return fmt.Errorf("bk: bk requires a command. See 'bk --help'.")
+		return fmt.Errorf("bk: command required. See 'bk --help'.")
 	}
 
 	if len(args) > 3 {
@@ -66,7 +66,7 @@ func Run(args []string) error {
 		fmt.Println(alias.UnsafeResolveAlias(args[1:], aliasFilePath))
 
 	default:
-		return fmt.Errorf("bk: '%s' is not a bk command. See 'bk --help'.", args[0])
+		return fmt.Errorf("bk: '%s' is not a command. See 'bk --help'.", args[0])
 
 	}
 
