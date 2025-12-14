@@ -122,7 +122,6 @@ Descriptions:
 ```
 
 
-Notes:
--------------------------------------------------------------------------
-  To enable `cd <alias>` functionality, bk automatically injects a small
-  integration block into your `~/.zshrc` on first run.
+> [!IMPORTANT]
+> To enable `cd <alias>` functionality, bk automatically injects a small
+> integration block into your `~/.zshrc` on first run.
