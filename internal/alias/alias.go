@@ -8,14 +8,14 @@ import (
 	"github.com/s111ew/bk/internal/fs"
 )
 
-func ResolveAlias(args []string, aliasFilePath string) (string, error) {
+func Resolve(args []string, aliasFilePath string) (string, error) {
 	if len(args) != 1 {
 		return "", fmt.Errorf("bk: 'bk --get' requires 1 argument '<alias>'. See 'bk --help'.")
 	}
 
 	aliasName := args[0]
 
-	aliases, err := fs.LoadAliases(aliasFilePath)
+	aliases, err := fs.LoadAll(aliasFilePath)
 	if err != nil {
 		return "", err
 	}
@@ -29,15 +29,15 @@ func ResolveAlias(args []string, aliasFilePath string) (string, error) {
 	return "", errors.New("alias not found")
 }
 
-func UnsafeResolveAlias(args []string, aliasFilePath string) string {
+func UnsafeResolve(args []string, aliasFilePath string) string {
 	aliasName := args[0]
 
-	alias, _ := fs.LoadSingleAlias(aliasName, aliasFilePath)
+	alias, _ := fs.LoadOne(aliasName, aliasFilePath)
 
 	return alias.Path
 }
 
-func AddAlias(args []string, aliasFilePath string) error {
+func Add(args []string, aliasFilePath string) error {
 
 	if len(args) < 1 {
 		return fmt.Errorf("bk: 'bk --add' requires atleast 1 argument '<alias>' and optionally '<path>'. See 'bk --help'.")
@@ -49,7 +49,7 @@ func AddAlias(args []string, aliasFilePath string) error {
 
 	aliasName := args[0]
 
-	var path string
+	var aliasPath string
 
 	if len(args) == 1 {
 
@@ -59,40 +59,22 @@ func AddAlias(args []string, aliasFilePath string) error {
 			return err
 		}
 
-		path = currWd
+		aliasPath = currWd
 
 	} else {
 
-		path = args[1]
+		aliasPath = args[1]
 
 	}
 
-	aliases, err := fs.LoadAliases(aliasFilePath)
-	if err != nil {
-		return err
-	}
-
-	for _, a := range aliases {
-		if a.Name == aliasName {
-			return errors.New(fmt.Sprintf("bk: alias '%s' exists", aliasName))
-		}
-	}
-
-	newAlias := fs.Alias{
-		Name: aliasName,
-		Path: path,
-	}
-
-	aliases = append(aliases, newAlias)
-
-	if err := fs.WriteAliases(aliases, aliasFilePath); err != nil {
+	if err := fs.WriteOne(aliasName, aliasPath, aliasFilePath); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func UpdateAlias(args []string, aliasFilePath string) error {
+func Update(args []string, aliasFilePath string) error {
 	if len(args) < 1 {
 		return fmt.Errorf("bk: 'bk --update' requires atleast 1 argument '<alias>' and optionally '<path>'. See 'bk --help'.")
 	}
@@ -121,7 +103,7 @@ func UpdateAlias(args []string, aliasFilePath string) error {
 
 	}
 
-	aliases, err := fs.LoadAliases(aliasFilePath)
+	aliases, err := fs.LoadAll(aliasFilePath)
 	if err != nil {
 		return err
 	}
@@ -133,42 +115,30 @@ func UpdateAlias(args []string, aliasFilePath string) error {
 		aliases = append(aliases, a)
 	}
 
-	if err := fs.WriteAliases(aliases, aliasFilePath); err != nil {
+	if err := fs.WriteAll(aliases, aliasFilePath); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func RemoveAlias(args []string, aliasFilePath string) error {
+func Remove(args []string, aliasFilePath string) error {
 	if len(args) != 1 {
 		return fmt.Errorf("bk: 'bk --remove' requires 1 argument '<alias>'. See 'bk --help'.")
 	}
 
 	aliasName := args[0]
 
-	aliases, err := fs.LoadAliases(aliasFilePath)
+	err := fs.RemoveOne(aliasName, aliasFilePath)
 	if err != nil {
-		return err
-	}
-
-	var newAliases []fs.Alias
-
-	for _, a := range aliases {
-		if a.Name != aliasName {
-			newAliases = append(newAliases, a)
-		}
-	}
-
-	if err := fs.WriteAliases(newAliases, aliasFilePath); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func ListAliases(aliasFilePath string) error {
-	aliases, err := fs.LoadAliases(aliasFilePath)
+func List(aliasFilePath string) error {
+	aliases, err := fs.LoadAll(aliasFilePath)
 	if err != nil {
 		return err
 	}

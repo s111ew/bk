@@ -7,55 +7,66 @@ import (
 	"github.com/s111ew/bk/internal/fs"
 )
 
-const ALIAS_FILE = ".bk"
-const CONFIG_FILE = ".zshrc"
-const ZSH_FUNCS_FILE = ".bk.zsh"
+type Files struct {
+	AliasFile  string
+	ConfigFile string
+	ZshFile    string
+}
 
-func Run(args []string) error {
+var f = Files{
+	AliasFile:  ".bk",
+	ConfigFile: ".zshrc",
+	ZshFile:    ".bk.zsh",
+}
 
-	if len(args) == 0 {
-		return fmt.Errorf("bk: bk requires a command. See 'bk --help'.")
+func Run(input []string) error {
+
+	if len(input) == 0 {
+		return fmt.Errorf("bk: command required. See 'bk --help'.")
 	}
 
-	if len(args) > 3 {
+	if len(input) > 3 {
 		return fmt.Errorf("bk: too many arguments. See 'bk --help'.")
 	}
 
-	aliasFilePath, configFilePath, zshFuncsFilePath, err := fs.GeneratePaths(ALIAS_FILE, CONFIG_FILE, ZSH_FUNCS_FILE)
+	aliasFp, configFp, zshFp, err := fs.GeneratePaths(f.AliasFile, f.ConfigFile, f.ZshFile)
 	if err != nil {
 		return err
 	}
 
-	if err := fs.Setup(aliasFilePath, configFilePath, zshFuncsFilePath); err != nil {
+	if err := fs.Setup(aliasFp, configFp, zshFp); err != nil {
 		return err
 	}
 
-	switch args[0] {
+	command := input[0]
+	args := input[1:]
+
+	switch command {
 
 	case "-g", "--get":
-		resolvedPath, err := alias.ResolveAlias(args[1:], aliasFilePath)
+		path, err := alias.Resolve(args, aliasFp)
 		if err != nil {
 			return err
 		}
-		fmt.Println(resolvedPath)
+		fmt.Println(path)
 
 	case "-a", "--add":
-		if err := alias.AddAlias(args[1:], aliasFilePath); err != nil {
+		if err := alias.Add(args, aliasFp); err != nil {
 			return err
 		}
 
 	case "-r", "--remove":
-		if err := alias.RemoveAlias(args[1:], aliasFilePath); err != nil {
+		if err := alias.Remove(args, aliasFp); err != nil {
 			return err
 		}
 
 	case "-u", "--update":
-		if err := alias.UpdateAlias(args[1:], aliasFilePath); err != nil {
+		if err := alias.Update(args, aliasFp); err != nil {
 			return err
 		}
 
 	case "-l", "--list":
-		if err := alias.ListAliases(aliasFilePath); err != nil {
+		if err := alias.List(aliasFp); err != nil {
 			return err
 		}
 
@@ -63,10 +74,10 @@ func Run(args []string) error {
 		return fmt.Errorf(HELP_TEXT)
 
 	case "--resolve":
-		fmt.Println(alias.UnsafeResolveAlias(args[1:], aliasFilePath))
+		fmt.Println(alias.UnsafeResolve(args, aliasFp))
 
 	default:
-		return fmt.Errorf("bk: '%s' is not a bk command. See 'bk --help'.", args[0])
+		return fmt.Errorf("bk: '%s' is not a command. See 'bk --help'.", command)
 
 	}
 
