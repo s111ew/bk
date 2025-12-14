@@ -18,7 +18,7 @@ func (a Alias) String() string {
 	return fmt.Sprintf("%s=%s\n", a.Name, a.Path)
 }
 
-func LoadSingleAlias(aliasToFind, aliasFilePath string) (Alias, error) {
+func LoadOne(aliasToFind, aliasFilePath string) (Alias, error) {
 	file, err := os.Open(aliasFilePath)
 	if err != nil {
 		return Alias{Name: "", Path: ""}, err
@@ -49,8 +49,8 @@ func LoadSingleAlias(aliasToFind, aliasFilePath string) (Alias, error) {
 	return Alias{Name: "", Path: ""}, nil
 }
 
-func WriteSingleAlias(aliasNameToAdd, aliasPathToAdd, aliasFilePath string) error {
-	aliases, err := LoadAliases(aliasFilePath)
+func WriteOne(aliasNameToAdd, aliasPathToAdd, aliasFilePath string) error {
+	aliases, err := LoadAll(aliasFilePath)
 	if err != nil {
 		return err
 	}
@@ -69,15 +69,15 @@ func WriteSingleAlias(aliasNameToAdd, aliasPathToAdd, aliasFilePath string) erro
 
 	aliases = append(aliases, newAlias)
 
-	if err := WriteAliases(aliases, aliasFilePath); err != nil {
+	if err := WriteAll(aliases, aliasFilePath); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func RemoveSingleAlias(aliasName, aliasFilePath string) error {
-	aliases, err := LoadAliases(aliasFilePath)
+func RemoveOne(aliasName, aliasFilePath string) error {
+	aliases, err := LoadAll(aliasFilePath)
 	if err != nil {
 		return err
 	}
@@ -90,32 +90,32 @@ func RemoveSingleAlias(aliasName, aliasFilePath string) error {
 		}
 	}
 
-	if err := WriteAliases(newAliases, aliasFilePath); err != nil {
+	if err := WriteAll(newAliases, aliasFilePath); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func LoadAliases(aliasFilePath string) ([]Alias, error) {
+func LoadAll(aliasFilePath string) ([]Alias, error) {
 	res, err := os.ReadFile(aliasFilePath)
 	if err != nil {
 		return nil, err
 	}
 
-	aliases := bytesToAliases(res)
+	aliases := bToA(res)
 
 	return aliases, nil
 }
 
-func WriteAliases(aliases []Alias, aliasFilePath string) error {
+func WriteAll(aliases []Alias, aliasFilePath string) error {
 	f, err := os.OpenFile(aliasFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	_, err = f.Write(aliasesToBytes(aliases))
+	_, err = f.Write(aToB(aliases))
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func WriteAliases(aliases []Alias, aliasFilePath string) error {
 	return nil
 }
 
-func aliasesToBytes(aliases []Alias) []byte {
+func aToB(aliases []Alias) []byte {
 	var buf bytes.Buffer
 
 	for _, a := range aliases {
@@ -133,7 +133,7 @@ func aliasesToBytes(aliases []Alias) []byte {
 	return buf.Bytes()
 }
 
-func bytesToAliases(b []byte) []Alias {
+func bToA(b []byte) []Alias {
 	lines := strings.Split(strings.TrimSpace(string(b)), "\n")
 
 	var aliases []Alias
