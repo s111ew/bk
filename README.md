@@ -90,7 +90,7 @@ Usage:
 
 Commands:
 -------------------------------------------------------------------------
-```zsh
+```
   -a  --add     <alias> [path]     Add a new alias/path pair
   -r  --remove  <alias>            Remove an existing alias
   -u  --update  <alias> [path]     Update the path associated with an alias
@@ -115,7 +115,7 @@ Descriptions:
         - <alias> must already exist.
         - [path] is optional; if omitted, the current working directory is used.
 
-  resolve Prints the path associated with the given alias.
+  get     Prints the path associated with the given alias.
         - <alias> must already exist.
 
   list    Prints all aliases and their paths in a table format.
