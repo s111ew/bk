@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/s111ew/bk/internal/fs"
 )
@@ -48,6 +49,9 @@ func Add(args []string, aliasFilePath string) error {
 	}
 
 	aliasName := args[0]
+	if err := sanitize(aliasName); err != nil {
+		return err
+	}
 
 	var aliasPath string
 
@@ -64,6 +68,9 @@ func Add(args []string, aliasFilePath string) error {
 	} else {
 
 		aliasPath = args[1]
+		if err := sanitize(aliasPath); err != nil {
+			return err
+		}
 
 	}
 
@@ -84,6 +91,9 @@ func Update(args []string, aliasFilePath string) error {
 	}
 
 	aliasName := args[0]
+	if err := sanitize(aliasName); err != nil {
+		return err
+	}
 
 	var path string
 
@@ -100,6 +110,9 @@ func Update(args []string, aliasFilePath string) error {
 	} else {
 
 		path = args[1]
+		if err := sanitize(path); err != nil {
+			return err
+		}
 
 	}
 
@@ -148,6 +161,14 @@ func List(aliasFilePath string) error {
 
 	for _, a := range aliases {
 		fmt.Printf("%-10s %-40s\n", a.Name, a.Path)
+	}
+
+	return nil
+}
+
+func sanitize(s string) error {
+	if strings.Contains(s, "=") {
+		return fmt.Errorf("bk: input cannot contain '='")
 	}
 
 	return nil
