@@ -20,9 +20,11 @@ func (a Alias) String() string {
 
 func LoadOne(aliasToFind, aliasFilePath string) (Alias, error) {
 	file, err := os.Open(aliasFilePath)
+	
 	if err != nil {
 		return Alias{Name: "", Path: ""}, err
 	}
+
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
@@ -103,7 +105,7 @@ func LoadAll(aliasFilePath string) ([]Alias, error) {
 		return nil, err
 	}
 
-	aliases := bToA(res)
+	aliases := bytesToAlias(res)
 
 	return aliases, nil
 }
@@ -115,7 +117,7 @@ func WriteAll(aliases []Alias, aliasFilePath string) error {
 	}
 	defer f.Close()
 
-	_, err = f.Write(aToB(aliases))
+	_, err = f.Write(aliasToBytes(aliases))
 	if err != nil {
 		return err
 	}
@@ -123,7 +125,7 @@ func WriteAll(aliases []Alias, aliasFilePath string) error {
 	return nil
 }
 
-func aToB(aliases []Alias) []byte {
+func aliasToBytes(aliases []Alias) []byte {
 	var buf bytes.Buffer
 
 	for _, a := range aliases {
@@ -133,7 +135,7 @@ func aToB(aliases []Alias) []byte {
 	return buf.Bytes()
 }
 
-func bToA(b []byte) []Alias {
+func bytesToAlias(b []byte) []Alias {
 	lines := strings.Split(strings.TrimSpace(string(b)), "\n")
 
 	var aliases []Alias
